@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.project.blaze.home.presentation.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_flashcardsFragment"
+            app:destination="@id/flashcardsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/queueFragment"
+        android:name="com.project.blaze.queue.QueueFragment"
+        android:label="fragment_queue"
+        tools:layout="@layout/fragment_queue" />
+    <fragment
+        android:id="@+id/globalFragment"
+        android:name="com.project.blaze.global.GlobalFragment"
+        android:label="fragment_global"
+        tools:layout="@layout/fragment_global" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.project.blaze.info.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/flashcardsFragment"
+        android:name="com.project.blaze.home.presentation.FlashcardsFragment"
+        android:label="fragment_flashcards"
+        tools:layout="@layout/fragment_flashcards" >
+        <action
+            android:id="@+id/action_flashcardsFragment_to_cardCreationFragment"
+            app:destination="@id/cardCreationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardCreationFragment"
+        android:name="com.project.blaze.home.presentation.CardCreationFragment"
+        android:label="fragment_card_creation"
+        tools:layout="@layout/fragment_card_creation" />
+</navigation>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/homeFragment"
+    android:icon="@drawable/baseline_home_24"
+    app:showAsAction="ifRoom"
+    android:title="Home" />
+    <item
+        android:id="@+id/queueFragment"
+        android:icon="@drawable/baseline_queue_24"
+        app:showAsAction="ifRoom"
+        android:title="Queue" />
+    <item
+        android:id="@+id/globalFragment"
+        android:icon="@drawable/baseline_public_24"
+        app:showAsAction="ifRoom"
+        android:title="Global" />
+    <item
+        android:id="@+id/infoFragment"
+        android:icon="@drawable/baseline_info_24"
+        app:showAsAction="ifRoom"
+        android:title="Info" />
+</menu>
