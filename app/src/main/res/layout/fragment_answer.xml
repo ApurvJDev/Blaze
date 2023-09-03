@@ -1,15 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".home.presentation.AnswerFragment"
     android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/mcq_switch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello Answer" />
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Multichoice question type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:theme="@style/mSwitchTheme"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"/>
 
-</FrameLayout>
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mcq_switch">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_ans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_email_24"
+                app:layout_constraintBottom_toTopOf="@id/edt_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edt_answer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="200dp"
+                android:background="@drawable/edt_bg"
+                android:gravity="start"
+                android:hint="Enter the answer"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_ans"/>
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_add_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="Add Image"
+        android:backgroundTint="@color/purple"
+        android:src="@drawable/baseline_photo_camera_back_24"
+        app:backgroundTint="#F6F4F4"
+        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mcq_switch"
+        app:tint="@color/light_lavender" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+

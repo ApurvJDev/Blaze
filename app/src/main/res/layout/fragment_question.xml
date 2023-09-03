@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".home.presentation.QuestionFragment"
     android:background="@color/white">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello question" />
+  <EditText
+      android:id="@+id/edt_answer"
+      android:hint="Enter question"
+      android:gravity="start"
+      android:textSize="14sp"
+      android:padding="10dp"
+      android:background="@drawable/edt_bg"
+      android:inputType="textMultiLine"
+      android:textColor="@color/black"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:importantForAutofill="no" />
 
-</FrameLayout>
+
+</LinearLayout>

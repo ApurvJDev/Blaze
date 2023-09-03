@@ -39,6 +39,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-auth:22.1.1'
     implementation 'com.google.firebase:firebase-firestore:24.7.1'
+    implementation 'com.google.firebase:firebase-storage:20.2.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
@@ -60,5 +61,8 @@ dependencies {
 
     def fragment_version = "1.5.7"
     implementation "androidx.fragment:fragment:$fragment_version"
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
 
 }
