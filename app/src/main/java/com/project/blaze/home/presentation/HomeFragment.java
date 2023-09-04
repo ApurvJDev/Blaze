@@ -3,11 +3,13 @@ package com.project.blaze.home.presentation;
 import static com.project.blaze.auth.domain.CreateUserProfile.USERS;
 import static com.project.blaze.home.repo.DeckRepo.DECKS;
 
+import android.content.ContentResolver;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentHomeBinding;
+import com.project.blaze.home.domain.FlashCardViewModel;
 import com.project.blaze.home.dto.DeckModel;
 import com.project.blaze.home.presentation.adapters.DecksAdapter;
 import com.project.blaze.home.presentation.dialogs.AddDeckDialog;
@@ -43,6 +46,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
     private NavController navController;
 
     private DecksAdapter adapter;
+    private FlashCardViewModel flashCardViewModel;
 
 
     public HomeFragment() {
@@ -69,6 +73,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
+        flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
 
 
         binding.fbAddDeck.setOnClickListener(v -> {
@@ -98,6 +103,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
 
     @Override
     public void onDeckClick(DocumentSnapshot snapshot) {
+        flashCardViewModel.setDeckId(snapshot.getId());
         navController.navigate(R.id.action_homeFragment_to_flashcardsFragment);
     }
 }

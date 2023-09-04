@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -73,6 +74,5 @@ public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.
         int count = 0;
         deckViewModel.createDeck(deckName,date,count);
         Toast.makeText(this, "Deck created", Toast.LENGTH_SHORT).show();
-
     }
 }

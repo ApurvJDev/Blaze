@@ -7,7 +7,7 @@
     android:background="@color/white">
 
   <EditText
-      android:id="@+id/edt_answer"
+      android:id="@+id/edt_question"
       android:hint="Enter question"
       android:gravity="start"
       android:textSize="14sp"
