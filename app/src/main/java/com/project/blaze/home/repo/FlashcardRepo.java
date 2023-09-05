@@ -27,22 +27,31 @@ public class FlashcardRepo {
     public static final String TAG = "FlashcardRepo";
     public static final String FLASHCARDS = "Flashcards";
     public static final String BASE_PATH = "Users";
-    private final String email;
+    private  String email;
     private boolean flashCardAdded;
     private FlashcardModel flashcardModel;
     private String deckId;
     private Uri imageUri = null;
 
-    private MutableLiveData<Boolean> isSuccessLiveData  = new MutableLiveData<>();
-
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference myStorageRef;
+    private OnSuccessfulListener listener;
 
     public FlashcardRepo() {
-        email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
 
+
+    }
+
+    public void setListener(OnSuccessfulListener listener)
+    {
+        this.listener = listener;
+    }
+
+    public void setEmail()
+    {
+        email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
     }
 
     public void setDeckId(String deckId)
@@ -67,11 +76,13 @@ public class FlashcardRepo {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "FlashCard added successfully");
+                listener.onSuccess(true);
                 flashCardAdded = true;
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                listener.onSuccess(false);
                 Log.d(TAG, e.toString());
             }
         });
@@ -93,19 +104,19 @@ public class FlashcardRepo {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                 Log.d(TAG, "Flashcard with image created");
-                                isSuccessLiveData.setValue(true);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            isSuccessLiveData.setValue(false);
                             Log.d(TAG, e.toString());
                         }
                     });
         }
     }
 
-    public LiveData<Boolean> getIsSuccessLiveData() {
-        return isSuccessLiveData;
+
+    public interface OnSuccessfulListener
+    {
+        void onSuccess(boolean success);
     }
 }

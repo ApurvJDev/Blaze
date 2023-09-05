@@ -9,6 +9,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,12 +26,13 @@ import java.util.Locale;
 
 public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.DeckCreatedListener {
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private NavController navController;
 
     private ActivityAppMainBinding binding;
     private DeckViewModel deckViewModel;
+    public static final String TAG = "AppMainActivity";
 
 
     @Override
@@ -39,7 +41,6 @@ public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.
         binding = ActivityAppMainBinding.inflate(getLayoutInflater());
         View v = binding.getRoot();
         setContentView(v);
-        mAuth = FirebaseAuth.getInstance();
 
         //set up bottom navigation
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_navHost_fragment);
@@ -57,13 +58,16 @@ public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.
 
     @Override
     protected void onStart() {
-        super.onStart();
+
+        Log.d(TAG, "null");
         FirebaseUser user = mAuth.getCurrentUser();
         if(user==null)
         {
+            Log.d(TAG, "null");
             startActivity(new Intent(AppMainActivity.this, AuthActivity.class));
             finish();
         }
+        super.onStart();
     }
 
     @Override

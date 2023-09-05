@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.presentation.AnswerFragment"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".home.presentation.AnswerFragment">
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/mcq_switch"
@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="Multichoice question type"
+        android:theme="@style/mSwitchTheme"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:theme="@style/mSwitchTheme"
-        app:layout_constraintBottom_toTopOf="@id/scrollView"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -25,6 +25,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mcq_switch">
 
@@ -38,9 +39,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="300dp"
                 android:layout_gravity="center"
-                android:visibility="gone"
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_email_24"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/edt_answer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -51,22 +52,20 @@
                 android:id="@+id/edt_answer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:minHeight="200dp"
                 android:background="@drawable/edt_bg"
                 android:gravity="start"
                 android:hint="Enter the answer"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
+                android:minHeight="200dp"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_ans"/>
-
-
-
+                app:layout_constraintTop_toBottomOf="@id/img_ans" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -74,21 +73,72 @@
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/purple"
+        android:contentDescription="Add Image"
+        android:src="@drawable/baseline_add_24"
+        app:backgroundTint="#F6F4F4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mcq_switch"
+        app:layout_constraintVertical_bias="0.9"
+        app:tint="@color/light_lavender" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/purple"
+        android:contentDescription="Save"
+        android:src="@drawable/baseline_save_24"
+        android:visibility="invisible"
+
+        app:backgroundTint="#F6F4F4"
+        app:layout_constraintBottom_toTopOf="@id/fb_add_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mcq_switch"
+        app:tint="@color/light_lavender" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:contentDescription="Add Image"
         android:backgroundTint="@color/purple"
+        android:contentDescription="Add Image"
         android:src="@drawable/baseline_photo_camera_back_24"
+        android:visibility="invisible"
         app:backgroundTint="#F6F4F4"
-        app:layout_constraintVertical_bias="0.9"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fb_action"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/mcq_switch"
+        app:layout_constraintVertical_bias="0.9"
         app:tint="@color/light_lavender" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

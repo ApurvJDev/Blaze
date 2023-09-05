@@ -23,10 +23,15 @@ public class DeckRepo {
     private  final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static final String TAG = "DeckRepo";
     private String deckName, date;
-    private final String email;
+    private String email;
     private int cardCount;
 
     public DeckRepo() {
+
+    }
+
+    public void setEmail()
+    {
         email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
     }
     public void setDeckDetails(String deckName,String date, int cardCount)

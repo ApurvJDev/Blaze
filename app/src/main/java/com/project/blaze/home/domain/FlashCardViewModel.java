@@ -18,9 +18,16 @@ public class FlashCardViewModel extends ViewModel {
 
     private final FlashcardRepo flashcardRepo = new FlashcardRepo();
 
+    public void setOnSuccessfulListener(FlashcardRepo.OnSuccessfulListener listener)
+    {
+        flashcardRepo.setListener(listener);
+    }
+
     public void setDeckId(String deckId)
     {
+        flashcardRepo.setEmail();
         flashcardRepo.setDeckId(deckId);
+
     }
 
     public void setQuestion(String question)
@@ -53,11 +60,11 @@ public class FlashCardViewModel extends ViewModel {
     public void setFlashcardSaved()
     {
         flashcardSavedLive.setValue(true);
-        flashcardRepo.createFlashCard(flashcardModel);
+
     }
     public void createFlashcard()
     {
-
+        flashcardRepo.createFlashCard(flashcardModel);
     }
 
     public LiveData<FlashcardModel> getUiSate()
@@ -66,13 +73,12 @@ public class FlashCardViewModel extends ViewModel {
         return liveUi;
     }
 
+    public String getAnswer()
+    {
+        return flashcardModel.getAnswer();
+    }
     public MutableLiveData<Uri> getLiveImgUri() {
         return liveImgUri;
-    }
-
-    public LiveData<Boolean> getIsSuccess()
-    {
-        return flashcardRepo.getIsSuccessLiveData();
     }
 
     public LiveData<Boolean> actionSave()

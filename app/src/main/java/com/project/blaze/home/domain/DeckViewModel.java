@@ -9,6 +9,8 @@ public class DeckViewModel extends ViewModel {
     private final DeckRepo deckRepo = new DeckRepo();
 
     public void createDeck(String deckName, String date, int count){
+        deckRepo.setEmail();
         deckRepo.setDeckDetails(deckName,date,count);
     }
+
 }
