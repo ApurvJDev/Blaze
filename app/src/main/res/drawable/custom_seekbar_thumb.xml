@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/custom_thumb_drawable.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/purple" /> <!-- Thumb color -->
+    <corners android:radius="10dp"/>
+    <size android:width="20dp" android:height="20dp" /> <!-- Adjust the width and height as needed -->
+</shape>

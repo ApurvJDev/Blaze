@@ -91,6 +91,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:padding="1dp"
+            android:visibility="invisible"
             android:contentDescription="Edit card"
             app:tint="@color/darker_purple"
             android:src="@drawable/baseline_create_24"/>

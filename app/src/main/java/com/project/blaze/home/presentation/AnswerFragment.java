@@ -112,7 +112,8 @@ public class AnswerFragment extends Fragment  {
         fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
             @Override
             public void onChanged(FlashcardModel card) {
-                populateViews(card);
+                if(card!=null)
+                    populateViews(card);
             }
         });
 

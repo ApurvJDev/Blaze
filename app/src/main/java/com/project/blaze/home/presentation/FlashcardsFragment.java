@@ -52,6 +52,7 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FCardViewModel fCardViewModel;
     private FlashCardViewModel flashCardViewModel;
+    private boolean review = false;
 
     public FlashcardsFragment() {
         // Required empty public constructor
@@ -79,6 +80,7 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
             public void onClick(View view) {
                 // indicate that the flashcard is being created
                 flashCardViewModel.setUpdateLive(false);
+                fCardViewModel.setFlashcardLive(null);
                 navController.navigate(R.id.action_flashcardsFragment_to_cardCreationFragment);
 
             }
@@ -106,6 +108,11 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
 
     @Override
     public void onCardClick(DocumentSnapshot snapshot) {
+        fCardViewModel.setEmail();
+        fCardViewModel.setFlashcardId(snapshot.getId());
+        fCardViewModel.retrieveFlashcard();
+        review = true;
+
 
     }
 
@@ -114,9 +121,9 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
         // indicate that the flashcard is being updated
         fCardViewModel.setEmail();
         flashCardViewModel.setUpdateLive(true);
-
         fCardViewModel.setFlashcardId(snapshot.getId());
         fCardViewModel.retrieveFlashcard();
+        review = false;
 
 
     }
@@ -124,11 +131,15 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
     @Override
     public void onRetrieved(FlashcardModel card) {
         fCardViewModel.setFlashcardLive(card);
-        navController.navigate(R.id.action_flashcardsFragment_to_cardCreationFragment);
+        if(!review)
+            navController.navigate(R.id.action_flashcardsFragment_to_cardCreationFragment);
+        else  navController.navigate(R.id.action_flashcardsFragment_to_reviewFragment);
+        review = false;
     }
 
     @Override
     public void onUpdate(boolean success) {
         Toast.makeText(requireActivity(), "Flashcard Updated!", Toast.LENGTH_SHORT).show();
     }
+
 }

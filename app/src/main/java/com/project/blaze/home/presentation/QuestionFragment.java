@@ -56,7 +56,8 @@ public class QuestionFragment extends Fragment implements FlashcardRepo.OnSucces
         fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
             @Override
             public void onChanged(FlashcardModel card) {
-                binding.edtQuestion.setText(card.getQuestion());
+                if(card!=null)
+                    binding.edtQuestion.setText(card.getQuestion());
             }
         });
 

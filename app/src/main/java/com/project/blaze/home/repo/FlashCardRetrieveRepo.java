@@ -63,6 +63,7 @@ public class FlashCardRetrieveRepo {
                             FlashcardModel flashcard = documentSnapshot.toObject(FlashcardModel.class);
                             listener.onRetrieved(flashcard);
 
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -117,6 +118,7 @@ public class FlashCardRetrieveRepo {
         void onRetrieved(FlashcardModel card);
 
         void onUpdate(boolean success);
+
     }
 
 
