@@ -94,18 +94,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:backgroundTint="@color/purple"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/blue"
         android:contentDescription="Save"
         android:src="@drawable/baseline_save_24"
         android:visibility="invisible"
-
         app:backgroundTint="#F6F4F4"
         app:layout_constraintBottom_toTopOf="@id/fb_add_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintVertical_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/mcq_switch"
+        app:layout_constraintVertical_bias="1"
         app:tint="@color/light_lavender" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -113,7 +113,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:backgroundTint="@color/purple"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/light_red"
         android:contentDescription="Add Image"
         android:src="@drawable/baseline_photo_camera_back_24"
         android:visibility="invisible"
@@ -123,7 +124,7 @@
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/mcq_switch"
-        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintVertical_bias="1"
         app:tint="@color/light_lavender" />
 
     <androidx.constraintlayout.widget.Guideline

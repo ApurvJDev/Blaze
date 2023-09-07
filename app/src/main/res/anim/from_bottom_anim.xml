@@ -3,7 +3,7 @@
     android:fillAfter="true">
     <translate
         android:duration = "300"
-        android:fromYDelta="100%"
+        android:fromYDelta="90%"
         android:toYDelta="0%"/>
 
     <scale

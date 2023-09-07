@@ -76,7 +76,8 @@ public class FlashcardRepo {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "FlashCard added successfully");
-                listener.onSuccess(true);
+                if(listener!=null)
+                    listener.onSuccess(true);
                 flashCardAdded = true;
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -103,7 +104,7 @@ public class FlashcardRepo {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                Log.d(TAG, "Flashcard with image created");
+                                Log.d(TAG, "Flashcard with image created!");
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

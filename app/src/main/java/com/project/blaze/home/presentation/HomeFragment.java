@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentHomeBinding;
+import com.project.blaze.home.domain.FCardViewModel;
 import com.project.blaze.home.domain.FlashCardViewModel;
 import com.project.blaze.home.dto.DeckModel;
 import com.project.blaze.home.presentation.adapters.DecksAdapter;
@@ -47,6 +48,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
 
     private DecksAdapter adapter;
     private FlashCardViewModel flashCardViewModel;
+    private FCardViewModel fCardViewModel;
 
 
     public HomeFragment() {
@@ -74,6 +76,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
+        fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
 
 
         binding.fbAddDeck.setOnClickListener(v -> {
@@ -104,6 +107,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
     @Override
     public void onDeckClick(DocumentSnapshot snapshot) {
         flashCardViewModel.setDeckId(snapshot.getId());
+        fCardViewModel.setDeckId(snapshot.getId());
         navController.navigate(R.id.action_homeFragment_to_flashcardsFragment);
     }
 }

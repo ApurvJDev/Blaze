@@ -1,7 +1,10 @@
 package com.project.blaze.home.presentation;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,25 +19,35 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.project.blaze.GlideApp;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentAnswerBinding;
+import com.project.blaze.home.domain.FCardViewModel;
 import com.project.blaze.home.domain.FlashCardViewModel;
+import com.project.blaze.home.dto.FlashcardModel;
+import com.project.blaze.home.repo.FlashCardRetrieveRepo;
 import com.project.blaze.home.repo.FlashcardRepo;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 
-public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessfulListener {
+public class AnswerFragment extends Fragment  {
 
 
     private FragmentAnswerBinding binding;
+    public static final String TAG = "AnswerFragment";
     private NavController navController;
     private FlashCardViewModel flashCardViewModel;
+    private FCardViewModel fCardViewModel;
 
     //anim
     private  Animation rotateOpen;
@@ -85,13 +98,23 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         rotateOpen = AnimationUtils.loadAnimation(requireActivity(),R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(requireActivity(),R.anim.rotate_close_anim);
         fromBottom = AnimationUtils.loadAnimation(requireActivity(),R.anim.from_bottom_anim);
         toBottom = AnimationUtils.loadAnimation(requireActivity(),R.anim.to_bottom_anim);
 
         navController = Navigation.findNavController(requireActivity(),R.id.main_navHost_fragment);
+        fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
+
+        fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
+            @Override
+            public void onChanged(FlashcardModel card) {
+                populateViews(card);
+            }
+        });
 
         flashCardViewModel.getLiveImgUri().observe(getViewLifecycleOwner(), uri -> {
             // restore image state
@@ -101,7 +124,10 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
                 binding.imgAns.setVisibility(View.VISIBLE);
                 Picasso.get().load(uri).into(binding.imgAns);
 
+
             }
+            fCardViewModel.setImageUri(uri);
+
 
         });
 
@@ -109,7 +135,10 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
 
         binding.fbAction.setOnClickListener(v -> initiateAction());
 
-        binding.fbAddImage.setOnClickListener(v -> mGetContent.launch("image/*"));
+        binding.fbAddImage.setOnClickListener(v ->{
+            mGetContent.launch("image/*");
+
+        });
 
         binding.fbSave.setOnClickListener(v->{
             boolean isMCQ = binding.mcqSwitch.isChecked();
@@ -140,9 +169,10 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
 
             if(keyCode == KeyEvent.KEYCODE_DEL)
             {
-                if(Objects.equals(binding.edtAnswer.getText().toString(), "") && binding.imgAns.getVisibility() == View.VISIBLE)
+                if(binding.edtAnswer.getSelectionStart()==0 && binding.imgAns.getVisibility() == View.VISIBLE)
                 {
                     binding.imgAns.setImageDrawable(null);
+                    flashCardViewModel.setHasImage(false);
                     flashCardViewModel.setLiveImgUri(null);
                     binding.imgAns.setVisibility(View.GONE);
 
@@ -157,6 +187,8 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
 
     }
 
+
+
     private boolean findAnswer(String input) {
         // Split the input string into words using comma as the delimiter
         String[] words = input.split(",");
@@ -170,7 +202,7 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
             if (word.startsWith("#")) {
                 // If a "#" prefix is found and it's the first one, set the flag
                 if (!foundHashPrefix) {
-                    correctOption = word;
+                    correctOption = word.substring(1);// remove first character "#"
                     foundHashPrefix = true;
                 } else {
                     // If more than one "#" prefix is found, the format is invalid
@@ -222,8 +254,26 @@ public class AnswerFragment extends Fragment implements FlashcardRepo.OnSuccessf
     }
 
 
-    @Override
-    public void onSuccess(boolean success) {
-        Toast.makeText(requireActivity(), "Flashcard created!!", Toast.LENGTH_SHORT).show();
+
+
+    // when its update the populate the views
+    private void populateViews(FlashcardModel card) {
+        binding.mcqSwitch.setChecked(card.isMcq());
+        if(card.isMcq())binding.edtAnswer.setText(card.getOptionsList());
+        else binding.edtAnswer.setText(card.getAnswer());
+        if(card.isHasImage())
+        {
+            flashCardViewModel.setLiveImgUri(null);
+            Log.d(TAG, fCardViewModel.getImage().toString());
+            //show image using glide and skip caching
+            GlideApp.with(this)
+                    .load(fCardViewModel.getImage())
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(binding.imgAns);
+            binding.imgAns.setVisibility(View.VISIBLE);
+
+        }
+
     }
 }

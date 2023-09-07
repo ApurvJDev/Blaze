@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.project.blaze.home.dto.FlashcardModel;
+import com.project.blaze.home.repo.FlashCardRetrieveRepo;
 import com.project.blaze.home.repo.FlashcardRepo;
 
 public class FlashCardViewModel extends ViewModel {
@@ -15,9 +16,16 @@ public class FlashCardViewModel extends ViewModel {
     private final MutableLiveData<FlashcardModel> liveUi = new MutableLiveData<>();
     private final MutableLiveData<Uri> liveImgUri = new MutableLiveData<>();
     private final MutableLiveData<Boolean> flashcardSavedLive = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isUpdateLive = new MutableLiveData<>();
 
     private final FlashcardRepo flashcardRepo = new FlashcardRepo();
 
+
+
+    public void setUpdateLive(boolean update)
+    {
+        isUpdateLive.setValue(update);
+    }
     public void setOnSuccessfulListener(FlashcardRepo.OnSuccessfulListener listener)
     {
         flashcardRepo.setListener(listener);
@@ -42,9 +50,14 @@ public class FlashCardViewModel extends ViewModel {
     {
         flashcardModel.setMcq(checked);
     }
+
+    public void setHasImage(boolean bool)
+    {
+        flashcardModel.setHasImage(bool);
+    }
     public void setLiveImgUri(Uri uri){
         liveImgUri.setValue(uri);
-        flashcardModel.setHasImage(true);
+
     }
     public void setMcqOptions(String mcqOptions)
     {
@@ -54,6 +67,7 @@ public class FlashCardViewModel extends ViewModel {
     public void setImage()
     {
         flashcardRepo.uploadImg(liveImgUri.getValue());
+        flashcardModel.setHasImage(true);
 
     }
 
@@ -62,9 +76,20 @@ public class FlashCardViewModel extends ViewModel {
         flashcardSavedLive.setValue(true);
 
     }
+
+    public void resetFlashcardSaved()
+    {
+        flashcardSavedLive.setValue(false);
+    }
     public void createFlashcard()
     {
         flashcardRepo.createFlashCard(flashcardModel);
+        flashcardSavedLive.setValue(false);
+    }
+
+    public FlashcardModel getFlashCard()
+    {
+        return flashcardModel;
     }
 
     public LiveData<FlashcardModel> getUiSate()
@@ -84,5 +109,9 @@ public class FlashCardViewModel extends ViewModel {
     public LiveData<Boolean> actionSave()
     {
         return  flashcardSavedLive;
+    }
+
+    public LiveData<Boolean> getIsUpdateLive() {
+        return isUpdateLive;
     }
 }
