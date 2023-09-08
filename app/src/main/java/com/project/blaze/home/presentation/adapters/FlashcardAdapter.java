@@ -76,10 +76,7 @@ public class FlashcardAdapter extends FirestoreRecyclerAdapter<FlashcardModel, F
             cardItem = itemView.findViewById(R.id.flash_card);
 
             cardItem.setOnClickListener(this);
-            img_edit.setOnClickListener(v ->{
-                int pos = getBindingAdapterPosition();
-                listener.onEditClick(getSnapshots().getSnapshot(pos));
-            });
+
         }
 
         @Override
@@ -92,7 +89,6 @@ public class FlashcardAdapter extends FirestoreRecyclerAdapter<FlashcardModel, F
     public interface FlashCardClickListener{
         void onCardClick(DocumentSnapshot snapshot);
 
-        void onEditClick(DocumentSnapshot snapshot);
     }
 
 }

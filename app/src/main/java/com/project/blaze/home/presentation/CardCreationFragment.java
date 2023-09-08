@@ -46,6 +46,12 @@ private ViewPagerAdapter viewPagerAdapter;
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(requireActivity(),R.id.main_navHost_fragment);
 
+        if(getArguments()!=null)
+        {
+            boolean edit  = getArguments().getBoolean("EDIT");
+            if(edit) binding.title.setText("Edit Flashacard");
+        }
+
         viewPagerAdapter = new ViewPagerAdapter(this);
         binding.viewPager2.setAdapter(viewPagerAdapter);
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

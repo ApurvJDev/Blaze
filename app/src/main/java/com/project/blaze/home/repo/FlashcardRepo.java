@@ -7,17 +7,18 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.project.blaze.home.dto.DeckModel;
 import com.project.blaze.home.dto.FlashcardModel;
 
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class FlashcardRepo {
     private  String email;
     private boolean flashCardAdded;
     private FlashcardModel flashcardModel;
+    private DeckModel deck;
     private String deckId;
     private Uri imageUri = null;
 
@@ -76,6 +78,7 @@ public class FlashcardRepo {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "FlashCard added successfully");
+                updateDeck();  // Increment the flashcard count of the deck
                 if(listener!=null)
                     listener.onSuccess(true);
                 flashCardAdded = true;
@@ -113,6 +116,30 @@ public class FlashcardRepo {
                         }
                     });
         }
+    }
+
+    public void updateDeck()
+    {
+        DocumentReference deckRef = db.collection(USERS).document(email).collection(DECKS)
+                .document(deckId);
+
+            deckRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    deck = documentSnapshot.toObject(DeckModel.class);
+                    assert deck != null;
+                    deck.setFlashcardCount(deck.getFlashcardCount() + 1);
+                    deckRef.set(deck).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d(TAG, "Deck updated ");
+                        }
+                    });
+                }
+            });
+
+
+
     }
 
 

@@ -22,6 +22,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.project.blaze.GlideApp;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentReviewBinding;
@@ -73,7 +75,9 @@ public class ReviewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 flashCardViewModel.setUpdateLive(true);
-                navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2);
+                Bundle bundleNav = new Bundle();
+                bundleNav.putBoolean("EDIT",true);
+                navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2,bundleNav);
             }
         });
 
@@ -98,7 +102,7 @@ public class ReviewFragment extends Fragment {
         binding.fabDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(requireActivity(), reviewRating, Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -162,6 +166,7 @@ public class ReviewFragment extends Fragment {
         if(flashcard.isHasImage())
         {
             binding.imgAns.setVisibility(View.VISIBLE);
+
             GlideApp.with(this)
                     .load(fCardViewModel.getImage())
                     .skipMemoryCache(true)

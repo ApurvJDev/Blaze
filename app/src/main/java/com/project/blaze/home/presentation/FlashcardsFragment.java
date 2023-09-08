@@ -116,17 +116,17 @@ public class FlashcardsFragment extends Fragment implements FlashcardAdapter.Fla
 
     }
 
-    @Override
-    public void onEditClick(DocumentSnapshot snapshot) {
-        // indicate that the flashcard is being updated
-        fCardViewModel.setEmail();
-        flashCardViewModel.setUpdateLive(true);
-        fCardViewModel.setFlashcardId(snapshot.getId());
-        fCardViewModel.retrieveFlashcard();
-        review = false;
-
-
-    }
+//    @Override
+//    public void onEditClick(DocumentSnapshot snapshot) {
+//        // indicate that the flashcard is being updated
+//        fCardViewModel.setEmail();
+//        flashCardViewModel.setUpdateLive(true);
+//        fCardViewModel.setFlashcardId(snapshot.getId());
+//        fCardViewModel.retrieveFlashcard();
+//        review = false;
+//
+//
+//    }
 
     @Override
     public void onRetrieved(FlashcardModel card) {

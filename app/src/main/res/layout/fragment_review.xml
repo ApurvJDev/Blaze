@@ -172,6 +172,8 @@
             android:padding="10dp"
             app:useCompatPadding="true"
             android:backgroundTint="@color/purple"
+            android:src="@drawable/baseline_done_outline_24"
+            app:tint = "@color/white"
             android:contentDescription="Review done" />
 
 
