@@ -69,6 +69,7 @@ public class FlashcardRepo {
     public  void createFlashCard(FlashcardModel flashCard)
     {
         flashcardModel = flashCard;
+        flashcardModel.setDeckId(deckId);
         flashCardAdded = false;
 
         DocumentReference flashCardRef = db.collection(USERS).document(email).collection(DECKS)

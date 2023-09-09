@@ -1,7 +1,20 @@
 package com.project.blaze.home.presentation;
 
+import static com.project.blaze.queue.presentation.QueueFragment.MODIFY_INTERVAL;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,31 +26,28 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.SeekBar;
-import android.widget.Toast;
-import android.widget.Toolbar;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.project.blaze.GlideApp;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentReviewBinding;
 import com.project.blaze.home.domain.FCardViewModel;
 import com.project.blaze.home.domain.FlashCardViewModel;
+import com.project.blaze.home.domain.ReviewViewModel;
 import com.project.blaze.home.dto.FlashcardModel;
-import com.project.blaze.home.repo.FlashCardRetrieveRepo;
+import com.project.blaze.home.helper.MyIntentBuilder;
+import com.project.blaze.home.repo.ReviewRepo;
 
-public class ReviewFragment extends Fragment {
+import java.util.Calendar;
+
+public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleListener {
 
    private FragmentReviewBinding binding;
+   public static final String FLASH_CARD = "Flashcard";
    private NavController navController;
+   private AlarmManager alarmManager;
    private FCardViewModel fCardViewModel;
    private FlashCardViewModel flashCardViewModel;
+   private ReviewViewModel reviewViewModel;
    private FlashcardModel flashcard;
    private boolean show = false;
    private String reviewRating = null;
@@ -48,6 +58,8 @@ public class ReviewFragment extends Fragment {
    public static final String HARD = "Hard";
    public static final String GOOD = "Good";
    public static final String EASY = "Easy";
+
+   private boolean modifyInterval = true;
 
     public ReviewFragment() {
         // Required empty public constructor
@@ -63,51 +75,111 @@ public class ReviewFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        if(reviewViewModel!=null)
+            reviewViewModel.setFlashcardFromQueueLive(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(requireActivity(),R.id.main_navHost_fragment);
+
         fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
+
+        reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
+        reviewViewModel.setListener(this);
+
+        if(getArguments()!=null)
+        {
+            modifyInterval = getArguments().getBoolean(MODIFY_INTERVAL);
+        }
+        reviewViewModel.setModifyInterval(modifyInterval);
+
+        if(modifyInterval)
+        {
+            binding.editFlashcard.setVisibility(View.VISIBLE);
+        }
+        else {
+            binding.editFlashcard.setVisibility(View.INVISIBLE);
+        }
         setUpRating();
 
-
-        binding.editFlashcard.setOnClickListener(new View.OnClickListener() {
+        //flashcard from queue
+        reviewViewModel.getFlashcardFromQueueLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
             @Override
-            public void onClick(View view) {
-                flashCardViewModel.setUpdateLive(true);
-                Bundle bundleNav = new Bundle();
-                bundleNav.putBoolean("EDIT",true);
-                navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2,bundleNav);
+            public void onChanged(FlashcardModel card) {
+                if(card!=null)
+                {
+                    Log.d(TAG, "Flashcard from queue");
+                    flashcard = card;
+                    populateViews();
+                }
             }
         });
 
-        fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
-            @Override
-            public void onChanged(FlashcardModel card) {
+        //flashcard from flashcards fragment
+        fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), card -> {
+            if(card!=null)
+            {
+                Log.d(TAG, "Flashcard from flashcards fragment");
                 flashcard = card;
                 populateViews();
             }
+
         });
 
-        binding.txtShowHideAns.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                show = !show;
-                if(show)
-                    showAnswer();
-                else hideAnswer();
+
+        binding.editFlashcard.setOnClickListener(v -> {
+            flashCardViewModel.setUpdateLive(true);
+            Bundle bundleNav = new Bundle();
+            bundleNav.putBoolean("EDIT",true);
+            navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2,bundleNav);
+        });
+
+
+
+        binding.txtShowHideAns.setOnClickListener(v -> {
+            show = !show;
+            if(show)
+                showAnswer();
+            else hideAnswer();
+        });
+
+        binding.fabDone.setOnClickListener(v -> {
+            if(binding.txtRating.getVisibility() == View.VISIBLE)
+            {
+                setupReview();
+
             }
-        });
-
-        binding.fabDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+            else {
+                Toast.makeText(requireActivity(), "Please review the card !", Toast.LENGTH_SHORT).show();
             }
+
+
         });
 
 
 
+
+    }
+
+    private void setupReview() {
+        reviewViewModel.setEmail();
+        reviewViewModel.setRecallRating(reviewRating);
+        reviewViewModel.setDeckId(flashcard.getDeckId());
+        reviewViewModel.beginReview(flashcard);
+        reviewViewModel.setContext(requireActivity());
+        if (!modifyInterval) {
+
+            reviewViewModel.deleteFromQueue(flashcard);
+            navController.navigate(R.id.action_reviewFragment_to_queueFragment);
+        }
+        else {
+            navController.navigate(R.id.action_reviewFragment_to_flashcardsFragment);
+        }
 
     }
 
@@ -132,22 +204,12 @@ public class ReviewFragment extends Fragment {
     }
 
     private void setReviewRating(int progress) {
-        String tag;
-        switch (progress / 25) {
-            case 0:
-                tag = AGAIN;
-                break;
-            case 1:
-                tag = HARD;
-                break;
-            case 2:
-                tag = GOOD;
-                break;
-            default:
-                tag = EASY;
-                break;
-        }
-        reviewRating = tag;
+        reviewRating = switch (progress / 25) {
+            case 0 -> AGAIN;
+            case 1 -> HARD;
+            case 2 -> GOOD;
+            default -> EASY;
+        };
         String rating = "Rating is: "+reviewRating;
         binding.txtRating.setVisibility(View.VISIBLE);
         binding.txtRating.setText(rating);
@@ -217,9 +279,48 @@ public class ReviewFragment extends Fragment {
     }
 
 
+    @Override
+    public void onScheduleReady(Long nextInterval, boolean graduated) {
+        FlashcardModel updatedFlashcard = reviewViewModel.getFlashcard();
+        Log.d(TAG, "Scheduled "+ updatedFlashcard.getQuestion());
+        if(!graduated)
+        {
+            Calendar c = Calendar.getInstance();
+            int min = (int) (c.get(Calendar.MINUTE)+nextInterval);
+            c.set(Calendar.MINUTE,min);
+            c.set(Calendar.SECOND,0);
+            startAlarm(c,updatedFlashcard);
+        }
+        else
+        {
+            // Calculate days and remaining minutes
+            long days = nextInterval / 1440;
+            long remainingMinutes = nextInterval % 1440;
+
+            Calendar c = Calendar.getInstance();
+
+            int day = c.get(Calendar.DAY_OF_MONTH) + (int) days;
+            int hour = (int) (remainingMinutes / 60);
+            int minute = (int) (remainingMinutes % 60);
+
+            c.set(Calendar.DAY_OF_MONTH, day);
+            c.set(Calendar.HOUR_OF_DAY, hour);
+            c.set(Calendar.MINUTE, minute);
+            startAlarm(c,updatedFlashcard);
+        }
+    }
 
 
-
+    private void startAlarm(Calendar c,FlashcardModel card) {
+        alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+        MyIntentBuilder intentBuilder = new MyIntentBuilder(requireActivity());
+        Intent intent = intentBuilder.buildIntentWithExtras(card);
+        int pid = Integer.parseInt(String.valueOf(System.currentTimeMillis()%10000));
+        card.setPid(pid);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireActivity(),pid,intent,0);
+        reviewViewModel.saveMetadata(card);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+    }
 
 
 }

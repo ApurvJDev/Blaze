@@ -1,4 +1,7 @@
-package com.project.blaze.home.presentation.adapters;
+package com.project.blaze.queue.presentation.adapters;
+
+import static com.project.blaze.home.presentation.adapters.FlashcardAdapter.GRAD;
+import static com.project.blaze.home.presentation.adapters.FlashcardAdapter.NOT_GRAD;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,39 +20,25 @@ import com.project.blaze.R;
 import com.project.blaze.home.dto.FlashcardModel;
 import com.project.blaze.queue.domain.MinutesToDateConverter;
 
-public class FlashcardAdapter extends FirestoreRecyclerAdapter<FlashcardModel, FlashcardAdapter.FlashCardViewHolder> {
+public class QueueAdapter extends FirestoreRecyclerAdapter<FlashcardModel, QueueAdapter.QueueViewHolder> {
 
-
-    private FlashCardClickListener listener;
-    public static final String SEEN = "Seen";
-    public static final String UNSEEN = "Unseen";
-    public static final String GRAD = "Graduated";
-    public static final String NOT_GRAD = "Not Graduated";
-
-    public FlashcardAdapter(@NonNull FirestoreRecyclerOptions<FlashcardModel> options) {
+    private OnFlashCardClickListener listener;
+    public QueueAdapter(@NonNull FirestoreRecyclerOptions<FlashcardModel> options) {
         super(options);
     }
 
-    public void setListener(FlashCardClickListener listener) {
+    public void setListener(OnFlashCardClickListener listener) {
         this.listener = listener;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FlashCardViewHolder holder, int position, @NonNull FlashcardModel model) {
+    protected void onBindViewHolder(@NonNull QueueViewHolder holder, int position, @NonNull FlashcardModel model) {
         holder.question.setText(model.getQuestion());
-        if(model.getNextReview() == -1)
-        {
-            holder.reviewDate.setText("");
-            holder.status.setText(UNSEEN);
-        }
-        else {
-             if(!model.isGraduated()) holder.grad.setText(NOT_GRAD);
-             else holder.grad.setText(GRAD);
-
-            holder.reviewDate.setText(cardReviewDate(model));
-            holder.status.setText(SEEN);
-        }
-
+        holder.reviewDate.setText(cardReviewDate(model));
+        holder.status.setVisibility(View.INVISIBLE);
+        if(model.isGraduated())
+            holder.grad.setText(GRAD);
+        else holder.grad.setText(NOT_GRAD);
     }
 
     private String cardReviewDate(FlashcardModel model) {
@@ -57,22 +46,21 @@ public class FlashcardAdapter extends FirestoreRecyclerAdapter<FlashcardModel, F
         return  converter.convertMinutesToDate(model.getNextReview());
     }
 
-
     @NonNull
     @Override
-    public FlashCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public QueueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.flashcard_item,parent,false);
-        return new FlashCardViewHolder(v,listener);
+        return new QueueViewHolder(v,listener);
     }
 
-    class FlashCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+     class QueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        private OnFlashCardClickListener listener;
         private final TextView question,status,reviewDate,grad;
         private final ImageView img_edit;
         private final MaterialCardView cardItem;
-        private final FlashCardClickListener  listener;
 
-        public FlashCardViewHolder(@NonNull View itemView, FlashCardClickListener listener) {
+        public QueueViewHolder(@NonNull View itemView, OnFlashCardClickListener listener) {
             super(itemView);
             this.listener = listener;
             question = itemView.findViewById(R.id.txt_question);
@@ -83,19 +71,18 @@ public class FlashcardAdapter extends FirestoreRecyclerAdapter<FlashcardModel, F
             cardItem = itemView.findViewById(R.id.flash_card);
 
             cardItem.setOnClickListener(this);
-
         }
 
         @Override
         public void onClick(View view) {
             int pos = getBindingAdapterPosition();
-            listener.onCardClick(getSnapshots().getSnapshot(pos));
+            listener.onFlashCardClick(getSnapshots().getSnapshot(pos));
         }
     }
 
-    public interface FlashCardClickListener{
-        void onCardClick(DocumentSnapshot snapshot);
-
+    public interface OnFlashCardClickListener
+    {
+        void onFlashCardClick(DocumentSnapshot documentSnapshot);
     }
 
 }

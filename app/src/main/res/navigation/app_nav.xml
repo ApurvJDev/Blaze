@@ -16,9 +16,13 @@
     </fragment>
     <fragment
         android:id="@+id/queueFragment"
-        android:name="com.project.blaze.queue.QueueFragment"
+        android:name="com.project.blaze.queue.presentation.QueueFragment"
         android:label="fragment_queue"
-        tools:layout="@layout/fragment_queue" />
+        tools:layout="@layout/fragment_queue" >
+        <action
+            android:id="@+id/action_queueFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/globalFragment"
         android:name="com.project.blaze.global.GlobalFragment"
@@ -61,5 +65,12 @@
             app:popUpTo="@id/flashcardsFragment"
             app:popUpToInclusive="false"
             />
+        <action
+            android:id="@+id/action_reviewFragment_to_queueFragment"
+            app:destination="@id/queueFragment" />
+        <action
+            android:id="@+id/action_reviewFragment_to_flashcardsFragment"
+            app:destination="@id/flashcardsFragment" />
     </fragment>
+
 </navigation>

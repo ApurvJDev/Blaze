@@ -6,8 +6,13 @@ import static com.project.blaze.home.repo.DeckRepo.DECKS;
 import android.content.ContentResolver;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -55,6 +60,17 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
         // Required empty public constructor
     }
 
+//    private final ActivityResultLauncher<String> mGetPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+//            new ActivityResultCallback<Boolean>() {
+//        @Override
+//        public void onActivityResult(Boolean result) {
+//            if(!result)
+//            {
+//                Toast.makeText(requireActivity(), "Please enable notifications ", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    });
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,6 +90,8 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //ask for notification request
+
         navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
         fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
