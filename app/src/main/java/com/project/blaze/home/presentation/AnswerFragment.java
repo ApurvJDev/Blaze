@@ -79,9 +79,11 @@ public class AnswerFragment extends Fragment  {
         flashCardViewModel.setLiveImgUri(null);
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
+        flashCardViewModel.setLiveImgUri(null);
         binding.fbAddImage.setVisibility(View.INVISIBLE);
         binding.fbSave.setVisibility(View.INVISIBLE);
         actionClicked = false;
@@ -142,6 +144,7 @@ public class AnswerFragment extends Fragment  {
         });
 
         binding.fbSave.setOnClickListener(v->{
+            if(binding.imgAns.getVisibility()!=View.VISIBLE) flashCardViewModel.resetImage();
             boolean isMCQ = binding.mcqSwitch.isChecked();
             flashCardViewModel.setMCQ(isMCQ);
             if(isMCQ)
@@ -160,6 +163,7 @@ public class AnswerFragment extends Fragment  {
             else {
                 flashCardViewModel.setAnswer(binding.edtAnswer.getText().toString());
                 flashCardViewModel.setFlashcardSaved();
+
             }
 
         });
@@ -175,6 +179,7 @@ public class AnswerFragment extends Fragment  {
                     binding.imgAns.setImageDrawable(null);
                     flashCardViewModel.setHasImage(false);
                     flashCardViewModel.setLiveImgUri(null);
+                    flashCardViewModel.resetImage();
                     binding.imgAns.setVisibility(View.GONE);
 
                 }

@@ -49,6 +49,7 @@ public class GlobalRepo {
     public void publishAndGlobalise(DeckModel deckModel)
    {
 
+
        deckRef =  db.collection(USERS).document(email).collection(DECKS).document(deckModel.getDeckId()).collection(FLASHCARDS);
        publishedDeckRef = db.collection(USERS).document(email).collection(PUBLISHED);
        deckRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -83,6 +84,7 @@ public class GlobalRepo {
    }
    private void publishFlashcards(FlashcardModel flashcard)
    {
+
        publishedDeckRef.document(flashcard.getDeckId()).collection(FLASHCARDS).document(flashcard.getId()).set(flashcard)
                .addOnSuccessListener(new OnSuccessListener<Void>() {
                    @Override

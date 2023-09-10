@@ -48,6 +48,7 @@ public class FlashCardViewModel extends ViewModel {
     }
     public void setMCQ(boolean checked)
     {
+        if(!checked)flashcardModel.setOptionsList(null);
         flashcardModel.setMcq(checked);
     }
 
@@ -69,6 +70,12 @@ public class FlashCardViewModel extends ViewModel {
         flashcardRepo.uploadImg(liveImgUri.getValue());
         flashcardModel.setHasImage(true);
 
+    }
+
+    public void resetImage()
+    {
+        flashcardRepo.uploadImg(liveImgUri.getValue());
+        flashcardModel.setHasImage(false);
     }
 
     public void setFlashcardSaved()

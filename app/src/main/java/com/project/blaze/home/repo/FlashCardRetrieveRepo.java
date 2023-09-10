@@ -76,6 +76,8 @@ public class FlashCardRetrieveRepo {
 
     public void updateFlashCard(FlashcardModel flashcard)
     {
+        flashcard.setDeckId(deckId);
+        flashcard.setId(flashcardId);
         db.collection(USERS).document(email).collection(DECKS).document(deckId)
                 .collection(FLASHCARDS).document(flashcardId).set(flashcard).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
