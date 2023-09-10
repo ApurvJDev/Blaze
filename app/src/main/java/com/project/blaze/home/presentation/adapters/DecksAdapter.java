@@ -1,11 +1,14 @@
 package com.project.blaze.home.presentation.adapters;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -45,10 +48,11 @@ public class DecksAdapter extends FirestoreRecyclerAdapter<DeckModel,DecksAdapte
         return new DeckViewHolder(v,listener);
     }
 
-     class DeckViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+     class DeckViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
         private final TextView name,date,cardCount;
         private MaterialCardView deckItem;
+        private ImageView imgMore;
         private final DeckClickListener listener;
 
         public DeckViewHolder(@NonNull View itemView,DeckClickListener listener) {
@@ -58,19 +62,50 @@ public class DecksAdapter extends FirestoreRecyclerAdapter<DeckModel,DecksAdapte
             date = itemView.findViewById(R.id.txt_date);
             cardCount = itemView.findViewById(R.id.txt_card_count);
             deckItem = itemView.findViewById(R.id.deck_item);
+            imgMore = itemView.findViewById(R.id.img_more);
 
             deckItem.setOnClickListener(this);
+            imgMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showPopUpMenu(view);
+                }
+            });
         }
 
         @Override
         public void onClick(View view) {
-            int pos = getBindingAdapterPosition();
-            listener.onDeckClick(getSnapshots().getSnapshot(pos));
+
+
+                int pos = getBindingAdapterPosition();
+                listener.onDeckClick(getSnapshots().getSnapshot(pos));
+
+
         }
-    }
+
+         private void showPopUpMenu(View view) {
+             PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+             popupMenu.inflate(R.menu.deck_pop_up);
+             popupMenu.setOnMenuItemClickListener(this);
+             popupMenu.show();
+         }
+
+         @Override
+         public boolean onMenuItemClick(MenuItem item) {
+            if(item.getItemId() == R.id.item_publish_deck)
+            {
+                int pos = getBindingAdapterPosition();
+                listener.onPublishDeck(getSnapshots().getSnapshot(pos));
+                return true;
+            }
+             return false;
+         }
+     }
 
     public interface DeckClickListener{
         void onDeckClick(DocumentSnapshot snapshot);
+
+        void onPublishDeck(DocumentSnapshot snapshot);
     }
 }
 

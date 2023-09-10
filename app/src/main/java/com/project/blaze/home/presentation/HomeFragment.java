@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -32,6 +33,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.blaze.R;
 import com.project.blaze.databinding.FragmentHomeBinding;
+import com.project.blaze.global.domain.GlobalViewModel;
 import com.project.blaze.home.domain.FCardViewModel;
 import com.project.blaze.home.domain.FlashCardViewModel;
 import com.project.blaze.home.dto.DeckModel;
@@ -54,6 +56,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
     private DecksAdapter adapter;
     private FlashCardViewModel flashCardViewModel;
     private FCardViewModel fCardViewModel;
+    private GlobalViewModel globalViewModel;
 
 
     public HomeFragment() {
@@ -96,6 +99,9 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
         fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
 
+        globalViewModel = new ViewModelProvider(requireActivity()).get(GlobalViewModel.class);
+        globalViewModel.setEmail();
+
 
         binding.fbAddDeck.setOnClickListener(v -> {
             AddDeckDialog creationDialog = new AddDeckDialog();
@@ -127,5 +133,20 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
         flashCardViewModel.setDeckId(snapshot.getId());
         fCardViewModel.setDeckId(snapshot.getId());
         navController.navigate(R.id.action_homeFragment_to_flashcardsFragment);
+    }
+
+    @Override
+    public void onPublishDeck(DocumentSnapshot snapshot) {
+
+        DeckModel deckModel = snapshot.toObject(DeckModel.class);
+        assert deckModel != null;
+        if(deckModel.getFlashcardCount() > 0)
+        {
+            globalViewModel.publishAndGlobalise(snapshot.toObject(DeckModel.class));
+
+        }
+        else Toast.makeText(requireActivity(), "Add flashcards first", Toast.LENGTH_SHORT).show();
+
+
     }
 }

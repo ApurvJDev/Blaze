@@ -77,7 +77,7 @@ public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.
     @Override
     public void onDeckCreated(String deckName) {
         Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
         String date = sdf.format(currentDate);
         int count = 0;
         deckViewModel.createDeck(deckName,date,count);

@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_flashcardsFragment"
             app:destination="@id/flashcardsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_globalFragment"
+            app:destination="@id/globalFragment" />
     </fragment>
     <fragment
         android:id="@+id/queueFragment"
@@ -27,7 +30,11 @@
         android:id="@+id/globalFragment"
         android:name="com.project.blaze.global.GlobalFragment"
         android:label="fragment_global"
-        tools:layout="@layout/fragment_global" />
+        tools:layout="@layout/fragment_global" >
+        <action
+            android:id="@+id/action_globalFragment_to_viewFlashcardsFragment"
+            app:destination="@id/viewFlashcardsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/infoFragment"
         android:name="com.project.blaze.info.InfoFragment"
@@ -72,5 +79,19 @@
             android:id="@+id/action_reviewFragment_to_flashcardsFragment"
             app:destination="@id/flashcardsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/viewFlashcardsFragment"
+        android:name="com.project.blaze.global.ViewFlashcardsFragment"
+        android:label="fragment_view_flashcards"
+        tools:layout="@layout/fragment_view_flashcards" >
+        <action
+            android:id="@+id/action_viewFlashcardsFragment_to_viewContentFragment"
+            app:destination="@id/viewContentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewContentFragment"
+        android:name="com.project.blaze.global.ViewContentFragment"
+        android:label="fragment_view_content"
+        tools:layout="@layout/fragment_view_content" />
 
 </navigation>

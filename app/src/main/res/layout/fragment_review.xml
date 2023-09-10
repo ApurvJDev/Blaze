@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_create_24"
-            android:tint="@color/darker_purple"
+            app:tint="@color/darker_purple"
             android:layout_marginEnd="20dp"
             android:layout_gravity="center_vertical|end"
             />

@@ -51,6 +51,7 @@ public class DeckRepo {
         deck.setDeckName(deckName);
         deck.setDateCreated(date);
         deck.setFlashcardCount(cardCount);
+        deck.setEmail(email); // also store the email of the creator for global feature
         deckRef.set(deck).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
