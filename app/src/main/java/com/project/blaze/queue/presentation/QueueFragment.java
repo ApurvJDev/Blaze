@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -84,6 +85,7 @@ public class QueueFragment extends Fragment implements QueueAdapter.OnFlashCardC
     public void onFlashCardClick(DocumentSnapshot documentSnapshot) {
         //navigate to review fragment
         reviewViewModel.setFlashcardFromQueueLive(documentSnapshot.toObject(FlashcardModel.class));
+        Toast.makeText(requireActivity(), Objects.requireNonNull(documentSnapshot.toObject(FlashcardModel.class)).getQuestion(), Toast.LENGTH_SHORT).show();
         Bundle bundleNav = new Bundle();
         bundleNav.putBoolean(MODIFY_INTERVAL,false);
         navController.navigate(R.id.action_queueFragment_to_reviewFragment,bundleNav);

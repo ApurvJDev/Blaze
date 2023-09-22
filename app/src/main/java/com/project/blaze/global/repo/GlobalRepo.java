@@ -104,7 +104,7 @@ public class GlobalRepo {
        if(email==null)
          email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
 
-       db.collection(GLOBAL).document().set(deckModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+       db.collection(GLOBAL).document(GLOBAL+deckModel.getDeckId()).set(deckModel).addOnSuccessListener(new OnSuccessListener<Void>() {
            @Override
            public void onSuccess(Void unused) {
                Log.d(TAG, deckModel.getDeckName() + " deck Globalised");
@@ -119,6 +119,8 @@ public class GlobalRepo {
 
    public void importDeck(DeckModel deckModel)
    {
+       //update import count globally
+       globaliseDeck(deckModel);
        if(email==null)
        {
            email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
@@ -146,7 +148,25 @@ public class GlobalRepo {
              }
          });
    }
-   //import the deck
+
+    private void updateGlobal(DeckModel deckModel) {
+        if(email==null)
+            email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+
+        db.collection(GLOBAL).document().update("importCount",deckModel.getImportCount()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG, deckModel.getDeckName() + " deck import count incremented");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    //import the deck
     private void beginImport(DeckModel deckModel)
     {
         CollectionReference thirdPartyRef = db.collection(USERS).document(deckModel.getEmail()).collection(PUBLISHED).document(deckModel.getDeckId()).collection(FLASHCARDS);

@@ -1,5 +1,6 @@
 package com.project.blaze.global;
 
+import static android.view.View.GONE;
 import static com.project.blaze.global.repo.GlobalRepo.GLOBAL;
 
 import android.os.Bundle;
@@ -7,8 +8,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,6 +62,7 @@ public class GlobalFragment extends Fragment implements GlobalDeckAdapter.OnGlob
     public void onPause() {
         super.onPause();
         binding.edtSearch.setText("");
+        binding.edtSearch.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -79,6 +79,7 @@ public class GlobalFragment extends Fragment implements GlobalDeckAdapter.OnGlob
         navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
         globalViewModel = new ViewModelProvider(requireActivity()).get(GlobalViewModel.class);
         globalViewModel.setEmail();
+        binding.edtSearch.setVisibility(View.VISIBLE);
 
 
 
@@ -88,7 +89,10 @@ public class GlobalFragment extends Fragment implements GlobalDeckAdapter.OnGlob
                 String searchSeq = binding.edtSearch.getText().toString().toLowerCase().trim();
                 if(!searchSeq.equals("") )
                 {
-                    setUpRv(searchSeq);
+                    CollectionReference globalDeckCollection  = db.collection(GLOBAL);
+                    Query query = globalDeckCollection.whereGreaterThanOrEqualTo("deckName", searchSeq)
+                            .whereLessThanOrEqualTo("deckName", searchSeq + "\uf8ff").orderBy("deckName").orderBy("importCount");
+                    setUpRv(query);
                 }
                 else Toast.makeText(requireActivity(), "Empty search ", Toast.LENGTH_SHORT).show();
                 return true;
@@ -98,14 +102,9 @@ public class GlobalFragment extends Fragment implements GlobalDeckAdapter.OnGlob
 
     }
 
-    private void setUpRv(String searchSeq) {
+    private void setUpRv(Query query) {
         String email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
         assert email != null;
-        CollectionReference globalDeckCollection  = db.collection(GLOBAL);
-        Query query = globalDeckCollection.whereGreaterThanOrEqualTo("deckName", searchSeq)
-                .whereLessThanOrEqualTo("deckName", searchSeq + "\uf8ff").orderBy("deckName");
-
-
         FirestoreRecyclerOptions<DeckModel> options = new FirestoreRecyclerOptions.Builder<DeckModel>()
                 .setQuery(query,DeckModel.class)
                 .build();
@@ -126,6 +125,17 @@ public class GlobalFragment extends Fragment implements GlobalDeckAdapter.OnGlob
 
     @Override
     public void onDeckImport(DocumentSnapshot snapshot) {
-        globalViewModel.importDeck(snapshot.toObject(DeckModel.class));
+        globalViewModel.importDeck(Objects.requireNonNull(snapshot.toObject(DeckModel.class)));
+    }
+
+    @Override
+    public void onUserClick(DocumentSnapshot snapshot) {
+        binding.edtSearch.setVisibility(GONE);
+        DeckModel deckModel = snapshot.toObject(DeckModel.class);
+        CollectionReference globalDeckCollection  = db.collection(GLOBAL);
+        assert deckModel != null;
+        Query query = globalDeckCollection.whereGreaterThanOrEqualTo("email", deckModel.getEmail())
+                .whereLessThanOrEqualTo("email", deckModel.getEmail() + "\uf8ff").orderBy("email").orderBy("importCount");
+        setUpRv(query);
     }
 }

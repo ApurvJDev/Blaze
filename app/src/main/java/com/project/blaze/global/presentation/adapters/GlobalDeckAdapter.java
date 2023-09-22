@@ -31,7 +31,7 @@ public class GlobalDeckAdapter extends FirestoreRecyclerAdapter<DeckModel, Globa
     protected void onBindViewHolder(@NonNull GlobalDeckAdapter.GlobalDeckViewHolder holder, int position, @NonNull DeckModel model) {
         String cardCnt = "("+model.getFlashcardCount()+")";
         holder.name.setText(model.getDeckName());
-        holder.date.setText(model.getDateCreated());
+        holder.date.setText(String.valueOf(model.getImportCount()));
         holder.cardCount.setText(cardCnt);
         holder.creator.setText(model.getEmail());
     }
@@ -59,6 +59,7 @@ public class GlobalDeckAdapter extends FirestoreRecyclerAdapter<DeckModel, Globa
             imgImport = itemView.findViewById(R.id.img_download);
             creator = itemView.findViewById(R.id.txt_creator);
             deckItem.setOnClickListener(this);
+            creator.setOnClickListener(this);
             imgImport.setOnClickListener(view -> {
                 int pos = getBindingAdapterPosition();
                 listener.onDeckImport(getSnapshots().getSnapshot(pos));
@@ -68,8 +69,12 @@ public class GlobalDeckAdapter extends FirestoreRecyclerAdapter<DeckModel, Globa
         @Override
         public void onClick(View view) {
             int pos = getBindingAdapterPosition();
-            listener.onGlobalDeckClick(getSnapshots().getSnapshot(pos));
+            if(view.getId() != R.id.txt_creator)
+                listener.onGlobalDeckClick(getSnapshots().getSnapshot(pos));
+            else listener.onUserClick(getSnapshots().getSnapshot(pos));
         }
+
+
     }
 
     public interface OnGlobalDeckClickListener
@@ -77,5 +82,7 @@ public class GlobalDeckAdapter extends FirestoreRecyclerAdapter<DeckModel, Globa
         void onGlobalDeckClick(DocumentSnapshot snapshot);
 
         void onDeckImport(DocumentSnapshot snapshot);
+
+        void onUserClick(DocumentSnapshot snapshot);
     }
 }

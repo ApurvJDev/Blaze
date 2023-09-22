@@ -38,6 +38,8 @@ public class GlobalViewModel extends ViewModel {
     }
     public void importDeck(DeckModel deck)
     {
+        //increment the import count
+        deck.setImportCount(deck.getImportCount()+1);
         globalRepo.importDeck(deck);
     }
 

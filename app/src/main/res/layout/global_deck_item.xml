@@ -51,8 +51,9 @@
             android:gravity="end"
             android:maxLines="1"
             android:padding="10dp"
+            android:drawableStart="@drawable/baseline_fire_24"
             android:text="26/3/23"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="130dp"
             android:textColor="@color/black"
             android:textSize="12sp" />
 
@@ -69,7 +70,7 @@
             android:maxLines="1"
             android:padding="8dp"
             android:text="(20)"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="130dp"
             android:textColor="@color/purple"
             android:textSize="12sp" />
 
@@ -85,7 +86,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:padding="5dp"
-           android:layout_marginTop="140dp"
+           android:layout_marginTop="130dp"
             />
 
         <TextView
@@ -96,7 +97,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="bottom"
             android:gravity="center"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textSize="14sp"
             android:textColor="@color/light_red"
             android:textStyle="italic"

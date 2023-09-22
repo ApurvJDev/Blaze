@@ -9,6 +9,7 @@ public class DeckModel {
     private String deckName;
     private String dateCreated;
     private Integer flashcardCount;
+    private long importCount = 0;
 
     private String email;
 
@@ -60,5 +61,13 @@ public class DeckModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public long getImportCount() {
+        return importCount;
+    }
+
+    public void setImportCount(long importCount) {
+        this.importCount = importCount;
     }
 }

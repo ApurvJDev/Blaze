@@ -72,6 +72,7 @@ public class AppMainActivity extends AppCompatActivity implements AddDeckDialog.
             finish();
         }
         super.onStart();
+
     }
 
     @Override

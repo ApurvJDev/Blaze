@@ -82,6 +82,12 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        reviewViewModel.setFlashcardFromQueueLive(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(requireActivity(),R.id.main_navHost_fragment);
