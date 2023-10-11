@@ -96,6 +96,7 @@ public class HomeFragment extends Fragment implements DecksAdapter.DeckClickList
         //ask for notification request
 
         navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
+        //Toast.makeText(requireActivity(), Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(), Toast.LENGTH_SHORT).show();
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
         fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
 

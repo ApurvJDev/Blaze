@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -41,25 +43,26 @@ import java.util.Calendar;
 
 public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleListener {
 
-   private FragmentReviewBinding binding;
-   public static final String FLASH_CARD = "Flashcard";
-   private NavController navController;
-   private AlarmManager alarmManager;
-   private FCardViewModel fCardViewModel;
-   private FlashCardViewModel flashCardViewModel;
-   private ReviewViewModel reviewViewModel;
-   private FlashcardModel flashcard;
-   private boolean show = false;
-   private String reviewRating = null;
-   public static final String TAG = "ReviewFragment";
-   public static final String HIDE = "Hide the answer";
-   public static final String SHOW = "Show the answer";
-   public static final String AGAIN = "Again";
-   public static final String HARD = "Hard";
-   public static final String GOOD = "Good";
-   public static final String EASY = "Easy";
+    private FragmentReviewBinding binding;
+    public static final String FLASH_CARD = "Flashcard";
+    private NavController navController;
+    private AlarmManager alarmManager;
+    private FCardViewModel fCardViewModel;
+    private FlashCardViewModel flashCardViewModel;
+    private ReviewViewModel reviewViewModel;
+    private FlashcardModel flashcard;
+    private boolean show = false;
+    private String reviewRating = null;
+    public static final String TAG = "ReviewFragment";
+    public static final String HIDE = "Hide the answer";
+    public static final String SHOW = "Show the answer";
+    public static final String AGAIN = "Again";
+    public static final String HARD = "Hard";
+    public static final String GOOD = "Good";
+    public static final String EASY = "Easy";
 
-   private boolean modifyInterval = true;
+    private boolean modifyInterval = true;
+
 
     public ReviewFragment() {
         // Required empty public constructor
@@ -70,14 +73,14 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding  = FragmentReviewBinding.inflate(inflater,container,false);
+        binding = FragmentReviewBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if(reviewViewModel!=null)
+        if (reviewViewModel != null)
             reviewViewModel.setFlashcardFromQueueLive(null);
     }
 
@@ -90,7 +93,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = Navigation.findNavController(requireActivity(),R.id.main_navHost_fragment);
+        navController = Navigation.findNavController(requireActivity(), R.id.main_navHost_fragment);
 
         fCardViewModel = new ViewModelProvider(requireActivity()).get(FCardViewModel.class);
         flashCardViewModel = new ViewModelProvider(requireActivity()).get(FlashCardViewModel.class);
@@ -98,27 +101,24 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
         reviewViewModel.setListener(this);
 
-        if(getArguments()!=null)
-        {
+        if (getArguments() != null) {
             modifyInterval = getArguments().getBoolean(MODIFY_INTERVAL);
         }
         reviewViewModel.setModifyInterval(modifyInterval);
 
-        if(modifyInterval)
-        {
+        if (modifyInterval) {
             binding.editFlashcard.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             binding.editFlashcard.setVisibility(View.INVISIBLE);
         }
         setUpRating();
+
 
         //flashcard from queue
         reviewViewModel.getFlashcardFromQueueLive().observe(getViewLifecycleOwner(), new Observer<FlashcardModel>() {
             @Override
             public void onChanged(FlashcardModel card) {
-                if(card!=null)
-                {
+                if (card != null) {
                     Log.d(TAG, "Flashcard from queue");
                     flashcard = card;
                     populateViews();
@@ -128,8 +128,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
 
         //flashcard from flashcards fragment
         fCardViewModel.getFlashcardLive().observe(getViewLifecycleOwner(), card -> {
-            if(card!=null)
-            {
+            if (card != null) {
                 Log.d(TAG, "Flashcard from flashcards fragment");
                 flashcard = card;
                 populateViews();
@@ -141,33 +140,28 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
         binding.editFlashcard.setOnClickListener(v -> {
             flashCardViewModel.setUpdateLive(true);
             Bundle bundleNav = new Bundle();
-            bundleNav.putBoolean("EDIT",true);
-            navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2,bundleNav);
+            bundleNav.putBoolean("EDIT", true);
+            navController.navigate(R.id.action_reviewFragment_to_cardCreationFragment2, bundleNav);
         });
-
 
 
         binding.txtShowHideAns.setOnClickListener(v -> {
             show = !show;
-            if(show)
+            if (show)
                 showAnswer();
             else hideAnswer();
         });
 
         binding.fabDone.setOnClickListener(v -> {
-            if(binding.txtRating.getVisibility() == View.VISIBLE)
-            {
+            if (binding.txtRating.getVisibility() == View.VISIBLE) {
                 setupReview();
 
-            }
-            else {
+            } else {
                 Toast.makeText(requireActivity(), "Please review the card !", Toast.LENGTH_SHORT).show();
             }
 
 
         });
-
-
 
 
     }
@@ -182,8 +176,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
 
             reviewViewModel.deleteFromQueue(flashcard);
             navController.navigate(R.id.action_reviewFragment_to_queueFragment);
-        }
-        else {
+        } else {
             navController.navigate(R.id.action_reviewFragment_to_flashcardsFragment);
         }
 
@@ -216,7 +209,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
             case 2 -> GOOD;
             default -> EASY;
         };
-        String rating = "Rating is: "+reviewRating;
+        String rating = "Rating is: " + reviewRating;
         binding.txtRating.setVisibility(View.VISIBLE);
         binding.txtRating.setText(rating);
     }
@@ -231,8 +224,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     private void showAnswer() {
 
         binding.txtShowHideAns.setText(HIDE);
-        if(flashcard.isHasImage())
-        {
+        if (flashcard.isHasImage()) {
             binding.imgAns.setVisibility(View.VISIBLE);
 
             GlideApp.with(this)
@@ -243,13 +235,11 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
             binding.imgAns.setVisibility(View.VISIBLE);
         }
         binding.txtAns.setVisibility(View.VISIBLE);
-        if(flashcard.isMcq())
-        {
+        if (flashcard.isMcq()) {
             String ans = "The correct answer is: " + flashcard.getAnswer();
             binding.txtAns.setText(ans);
 
-        }
-        else binding.txtAns.setText(flashcard.getAnswer());
+        } else binding.txtAns.setText(flashcard.getAnswer());
 
     }
 
@@ -257,8 +247,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     private void populateViews() {
         binding.txtQes.setText(flashcard.getQuestion());
 
-        if(flashcard.isMcq())
-        {
+        if (flashcard.isMcq()) {
             showOptions(flashcard.getOptionsList());
         }
     }
@@ -276,7 +265,7 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
             RadioButton option = new RadioButton(requireActivity());
             option.setText(word);
             int[][] states = {{android.R.attr.state_checked}, {}};
-            int[] colors = {ContextCompat.getColor(requireActivity(),R.color.purple), ContextCompat.getColor(requireActivity(),R.color.black)}; // Checked and unchecked color (same in this example)
+            int[] colors = {ContextCompat.getColor(requireActivity(), R.color.purple), ContextCompat.getColor(requireActivity(), R.color.black)}; // Checked and unchecked color (same in this example)
             CompoundButtonCompat.setButtonTintList(option, new ColorStateList(states, colors));
             // Add the radio button to the radio group
             binding.radioOptions.addView(option);
@@ -288,17 +277,14 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
     @Override
     public void onScheduleReady(Long nextInterval, boolean graduated) {
         FlashcardModel updatedFlashcard = reviewViewModel.getFlashcard();
-        Log.d(TAG, "Scheduled "+ updatedFlashcard.getQuestion());
-        if(!graduated)
-        {
+        Log.d(TAG, "Scheduled " + updatedFlashcard.getQuestion());
+        if (!graduated) {
             Calendar c = Calendar.getInstance();
-            int min = (int) (c.get(Calendar.MINUTE)+nextInterval);
-            c.set(Calendar.MINUTE,min);
-            c.set(Calendar.SECOND,0);
-            startAlarm(c,updatedFlashcard);
-        }
-        else
-        {
+            int min = (int) (c.get(Calendar.MINUTE) + nextInterval);
+            c.set(Calendar.MINUTE, min);
+            c.set(Calendar.SECOND, 0);
+            startAlarm(c, updatedFlashcard);
+        } else {
             // Calculate days and remaining minutes
             long days = nextInterval / 1440;
             long remainingMinutes = nextInterval % 1440;
@@ -312,21 +298,24 @@ public class ReviewFragment extends Fragment implements ReviewRepo.OnScheduleLis
             c.set(Calendar.DAY_OF_MONTH, day);
             c.set(Calendar.HOUR_OF_DAY, hour);
             c.set(Calendar.MINUTE, minute);
-            startAlarm(c,updatedFlashcard);
+            startAlarm(c, updatedFlashcard);
         }
     }
 
 
-    private void startAlarm(Calendar c,FlashcardModel card) {
+    private void startAlarm(Calendar c, FlashcardModel card) {
         alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
         MyIntentBuilder intentBuilder = new MyIntentBuilder(requireActivity());
         Intent intent = intentBuilder.buildIntentWithExtras(card);
-        int pid = Integer.parseInt(String.valueOf(System.currentTimeMillis()%10000));
+        int pid = Integer.parseInt(String.valueOf(System.currentTimeMillis() % 10000));
         card.setPid(pid);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireActivity(),pid,intent,0);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // only for tiramisu and newer versions
+            pendingIntent = PendingIntent.getBroadcast(requireActivity(), pid, intent, PendingIntent.FLAG_IMMUTABLE);
+        } else pendingIntent = PendingIntent.getBroadcast(requireActivity(), pid, intent, 0);
         reviewViewModel.saveMetadata(card);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
     }
-
-
 }

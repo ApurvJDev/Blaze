@@ -19,6 +19,11 @@ public class GlobalViewModel extends ViewModel {
         globalRepo.setEmail();
     }
 
+    public void setListeners(GlobalRepo.OnDeckGlobalisedListener deckGlobalisedListener, GlobalRepo.OnDeckImportedListener importedListener)
+    {
+        globalRepo.setListeners(deckGlobalisedListener,importedListener);
+    }
+
     public void setCreatorEmail(String creatorEmail) {
         this.creatorEmail = creatorEmail;
     }

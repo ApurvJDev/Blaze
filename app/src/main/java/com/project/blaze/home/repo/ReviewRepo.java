@@ -9,6 +9,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -171,7 +172,9 @@ public class ReviewRepo {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         MyIntentBuilder intentBuilder = new MyIntentBuilder(context);
         Intent intent = intentBuilder.buildIntentWithExtras(card);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,card.getPid(),intent,0);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) pendingIntent = PendingIntent.getBroadcast(context,card.getPid(),intent,PendingIntent.FLAG_IMMUTABLE);
+        else pendingIntent = PendingIntent.getBroadcast(context,card.getPid(),intent,0);
         alarmManager.cancel(pendingIntent);
         Log.d(TAG, "Previous alarms cancelled");
 

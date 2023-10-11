@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -56,7 +57,10 @@ public class AlertReceiver extends BroadcastReceiver {
 
     private void showNotification(Context context) {
         Intent i = new Intent(context, AppMainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, 0);
+
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
+        else pendingIntent = PendingIntent.getActivity(context, 0, i, 0);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
                 .setContentTitle("New card in queue!")

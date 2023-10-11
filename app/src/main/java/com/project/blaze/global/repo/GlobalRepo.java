@@ -5,7 +5,6 @@ import static com.project.blaze.home.repo.DeckRepo.DECKS;
 import static com.project.blaze.home.repo.FlashcardRepo.BASE_PATH;
 import static com.project.blaze.home.repo.FlashcardRepo.FLASHCARDS;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -39,10 +38,19 @@ public class GlobalRepo {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private String email;
     private CollectionReference deckRef, publishedDeckRef;
+    private OnDeckGlobalisedListener globalisedListener;
+    private OnDeckImportedListener importedListener;
 
 
     public void setEmail() {
         email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+    }
+
+    //set listeners
+    public void setListeners(OnDeckGlobalisedListener globalisedListener, OnDeckImportedListener importedListener)
+    {
+        this.globalisedListener  = globalisedListener;
+        this.importedListener = importedListener;
     }
 
 
@@ -63,6 +71,7 @@ public class GlobalRepo {
                    publishFlashcards(flashcard);
                }
                globaliseDeck(deckModel);
+               globalisedListener.onDeckGlobalisedListener(true);
            }
        }).addOnFailureListener(new OnFailureListener() {
            @Override
@@ -78,6 +87,7 @@ public class GlobalRepo {
            @Override
            public void onSuccess(Void unused) {
                Log.d(TAG,  deckModel.getDeckName() + "published");
+
            }
        });
 
@@ -108,11 +118,14 @@ public class GlobalRepo {
            @Override
            public void onSuccess(Void unused) {
                Log.d(TAG, deckModel.getDeckName() + " deck Globalised");
+
+
            }
        }).addOnFailureListener(new OnFailureListener() {
            @Override
            public void onFailure(@NonNull Exception e) {
                Log.d(TAG, e.toString());
+               globalisedListener.onDeckGlobalisedListener(false);
            }
        });
    }
@@ -181,11 +194,14 @@ public class GlobalRepo {
                     importFlashcard(flashcard,deckModel);
 
                 }
+                //when the deck and all the flashcards in it are imported
+                importedListener.onDeckImportedListener(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, e.toString());
+                importedListener.onDeckImportedListener(false);
             }
         });
 
@@ -239,6 +255,15 @@ public class GlobalRepo {
         return storage.getReference(BASE_PATH).child(creatorEmail).child(flashcard.getDeckId()).child(flashcard.getId());
     }
 
+    public interface  OnDeckGlobalisedListener
+    {
+        void onDeckGlobalisedListener(boolean success);
+    }
+
+    public interface OnDeckImportedListener
+    {
+        void onDeckImportedListener(boolean success);
+    }
 
 
 
