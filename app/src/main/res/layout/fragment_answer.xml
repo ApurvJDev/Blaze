@@ -54,7 +54,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/edt_bg"
                 android:gravity="start"
-                android:hint="Enter the answer"
+                android:hint="@string/enter_the_answer"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minHeight="200dp"

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -18,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -141,6 +143,15 @@ public class AnswerFragment extends Fragment  {
         binding.fbAddImage.setOnClickListener(v ->{
             mGetContent.launch("image/*");
 
+        });
+
+        // helper text for creating MCQ Questions
+        binding.mcqSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if(checked) binding.edtAnswer.setHint(requireActivity().getResources().getString(R.string.mcq_creation_hint));
+                else binding.edtAnswer.setHint(requireActivity().getResources().getString(R.string.enter_the_answer));
+            }
         });
 
         binding.fbSave.setOnClickListener(v->{

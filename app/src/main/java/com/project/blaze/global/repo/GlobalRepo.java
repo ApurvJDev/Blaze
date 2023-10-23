@@ -72,6 +72,8 @@ public class GlobalRepo {
                }
                globaliseDeck(deckModel);
                globalisedListener.onDeckGlobalisedListener(true);
+               
+               
            }
        }).addOnFailureListener(new OnFailureListener() {
            @Override
@@ -147,6 +149,7 @@ public class GlobalRepo {
                  Date currentDate = new Date();
                  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
                  String date = sdf.format(currentDate);
+
                  importedDeck.setEmail(email);
                  importedDeck.setDateCreated(date);
 
@@ -211,6 +214,10 @@ public class GlobalRepo {
     {
         email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
         if(flashcard.isHasImage())importImage(flashcard,deckModel);
+        //reset flashcard
+        flashcard.setGraduated(false);
+        flashcard.setNextReview(-1);
+
         db.collection(USERS).document(email).collection(DECKS).document(flashcard.getDeckId()).collection(FLASHCARDS).document(flashcard.getId())
                 .set(flashcard).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

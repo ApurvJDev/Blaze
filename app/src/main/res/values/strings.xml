@@ -11,4 +11,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="login_register">Login/Register</string>
     <string name="username">Username</string>
+    <string name="enter_the_answer">Enter the answer</string>
+    <string name="mcq_creation_hint">
+        For creating an answer in MCQ format list the options separated by commas and the correct option must be indicated with “#” as its prefix.\n
+        \nEg: a,b,#c,d
+        \nOptions: a,b,c,d
+        \nCorrect Option: c
+    </string>
 </resources>
