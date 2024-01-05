@@ -1,0 +1,1 @@
+This application is and upgraded version of previous flashcard application based on the suggestions given by the judges in the hackathon. We have added features for efficient collaboration between different users by creating a marketplace through which you can add your favorite decks right into your account !
